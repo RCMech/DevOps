@@ -4,5 +4,5 @@ helm:
     value: 742364958351.dkr.ecr.ap-south-1.amazonaws.com/oms-frontend
     forcestring: true
   - name: containerSpec.tag
-    value: v1.0.17
+    value: v1.0.18
     forcestring: true
