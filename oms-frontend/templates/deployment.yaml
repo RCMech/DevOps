@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app:  {{ .Values.Labels.app }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.Labels.app }}
+  replicas: {{ .Values.deploymentSpec.replicaCout }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Labels.app }}
+    spec:
+      containers:
+      - name:  {{ .Release.Name }}
+        image:  "{{ .Values.containerSpec.image }}:{{ .Values.containerSpec.tag }}"
+        {{- with .Values.containerSpec.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- range  .Values.serviceSpec.ports }}
+        ports:
+          - name: {{ .name }}
+            containerPort: {{ .port }}
+      {{- end  }}
+      restartPolicy: Always
